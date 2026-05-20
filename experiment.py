@@ -203,44 +203,26 @@ def compute_decision_boundary(
 ):
     x_min, x_max = X_train[:, 0].min() - 0.5, X_train[:, 0].max() + 0.5
     y_min, y_max = X_train[:, 1].min() - 0.5, X_train[:, 1].max() + 0.5
-    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 30), np.linspace(y_min, y_max, 30))
+    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 25), np.linspace(y_min, y_max, 25))
     grid_points = np.c_[xx.ravel(), yy.ravel()]
 
-    boundaries = {}
+    boundaries = {"grid": {"x": xx.tolist(), "y": yy.tolist()}, "Z": {}}
 
-    # Quantum
     from quantum_kernel import quantum_kernel_matrix
     K_grid_q = quantum_kernel_matrix(grid_points, X_train)
     svm_q = SVC(kernel="precomputed", random_state=random_state)
     svm_q.fit(K_train_q, y_train)
-    Z_q = svm_q.predict(K_grid_q).reshape(xx.shape)
-    boundaries["quantum"] = {
-        "grid_x": xx.tolist(),
-        "grid_y": yy.tolist(),
-        "Z": Z_q.tolist(),
-    }
+    boundaries["Z"]["quantum"] = svm_q.predict(K_grid_q).reshape(xx.shape).tolist()
 
-    # RBF
     K_grid_rbf = rbf_kernel(grid_points, X_train, gamma=best_rbf_gamma)
     svm_rbf = SVC(kernel="precomputed", random_state=random_state)
     svm_rbf.fit(K_train_rbf, y_train)
-    Z_rbf = svm_rbf.predict(K_grid_rbf).reshape(xx.shape)
-    boundaries["rbf"] = {
-        "grid_x": xx.tolist(),
-        "grid_y": yy.tolist(),
-        "Z": Z_rbf.tolist(),
-    }
+    boundaries["Z"]["rbf"] = svm_rbf.predict(K_grid_rbf).reshape(xx.shape).tolist()
 
-    # Polynomial
     K_grid_p = poly_kernel(grid_points, X_train, **best_poly_params)
     svm_poly = SVC(kernel="precomputed", random_state=random_state)
     svm_poly.fit(K_train_p, y_train)
-    Z_poly = svm_poly.predict(K_grid_p).reshape(xx.shape)
-    boundaries["polynomial"] = {
-        "grid_x": xx.tolist(),
-        "grid_y": yy.tolist(),
-        "Z": Z_poly.tolist(),
-    }
+    boundaries["Z"]["polynomial"] = svm_poly.predict(K_grid_p).reshape(xx.shape).tolist()
 
     return boundaries
 
@@ -267,6 +249,7 @@ if __name__ == "__main__":
         "moons": run_experiment(dataset="moons", n_samples=200, noise=0.15),
         "circles": run_experiment(dataset="circles", n_samples=200, noise=0.15),
     }
-    with open("results.json", "w") as f:
+    output_path = "frontend/public/results.json"
+    with open(output_path, "w") as f:
         json.dump(results, f, indent=2)
-    print("Done. Results saved to results.json")
+    print(f"Done. Results saved to {output_path}")

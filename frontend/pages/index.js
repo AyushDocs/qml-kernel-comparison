@@ -71,8 +71,8 @@ export default function Home() {
         <div style={styles.cardFull}>
           <h2>Decision Boundaries</h2>
           <div style={styles.boundaries}>
-            {Object.entries(data.decision_boundary).map(([name, db]) => (
-              <DecisionBoundary key={name} name={name} data={db} points={data.data} />
+            {['quantum', 'rbf', 'polynomial'].map(name => (
+              <DecisionBoundary key={name} name={name} data={data.decision_boundary} points={data.data} />
             ))}
           </div>
         </div>
