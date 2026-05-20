@@ -11,6 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install numpy scipy scikit-learn
+
+      - name: Regenerate experiment results
+        run: python experiment.py
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
