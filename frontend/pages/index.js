@@ -101,7 +101,7 @@ export default function Home() {
                 The kernel is the squared overlap between encoded states:
               </p>
               <pre style={styles.code}>
-K[i,j] = |⟨ϕ(xᵢ)|ϕ(xⱼ)⟩|² = ∏_{k=1}^{d} cos²(xᵢₖ - xⱼₖ)
+{'K[i,j] = |\u27E8\u03C6(x\u1D62)|\u03C6(x\u2C7C)\u27E9|\u00B2 = \u220F_{k=1}^{d} cos\u00B2(x\u1D62\u2096 - x\u2C7C\u2096)'}
               </pre>
               <p>
                 The inner product factorises across dimensions because of the tensor product
